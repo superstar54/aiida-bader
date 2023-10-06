@@ -31,14 +31,12 @@ setup(
     install_requires=[
         "aiida-core",
         "aiida-quantumespresso",
+        "aiida-cp2k",
         "pytest",
         "pytest-cov",
         "pre-commit",
     ],
     entry_points={
-        "aiida.node": [
-            "process.workflow.bader = aiida_bader.orm.bader:WorkTreeNode",
-        ],
         "aiida.calculations": [
             "bader = aiida_bader.calculations:BaderCalculation",
         ],
