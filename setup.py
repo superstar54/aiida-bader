@@ -30,6 +30,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "aiida-core",
+        "aiida-worktree",
         "aiida-quantumespresso",
         "aiida-cp2k",
         "pytest",
