@@ -1,0 +1,13 @@
+---
+label: bader
+description: Bader charge analysis
+default_calc_job_plugin: bader
+computer: localhost
+filepath_executable: /home/jovyan/.conda/envs/quantum-espresso-7.2/bin/bader
+prepend_text: |
+
+    eval "$(conda shell.posix hook)"
+    conda activate quantum-espresso-7.2
+
+    export OMP_NUM_THREADS=1
+append_text: ' '

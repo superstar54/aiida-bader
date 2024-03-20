@@ -31,7 +31,7 @@ setup(
     install_requires=[
         "aiida-core",
         "aiida-worktree",
-        "aiida-quantumespresso",
+        "aiida-quantumespresso~=4.4",
         "aiida-cp2k",
         "pytest",
         "pytest-cov",
@@ -46,6 +46,9 @@ setup(
         ],
         "aiida.workflows": [
             "bader.qe = aiida_bader.workchains:QeBaderWorkChain",
+        ],
+        "aiidalab_qe.properties": [
+            "bader = aiida_bader.aiidalab:bader",
         ],
     },
     package_data={},

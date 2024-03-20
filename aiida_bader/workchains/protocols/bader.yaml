@@ -1,0 +1,34 @@
+default_inputs:
+    clean_workdir: False
+    scf:
+        pw:
+            parameters:
+                CONTROL:
+                    restart_mode: from_scratch
+    pp:
+        parameters:
+            INPUTPP:
+                plot_num: 21
+            PLOT:
+                ifloag: 3
+        metadata:
+            options:
+                resources:
+                    num_machines: 1
+                max_wallclock_seconds: 43200  # Twelve hours
+                withmpi: True
+    bader:
+        metadata:
+            options:
+                resources:
+                    num_machines: 1
+                max_wallclock_seconds: 43200  # Twelve hours
+                withmpi: True
+default_protocol: moderate
+protocols:
+    moderate:
+        description: 'Protocol to perform a projected density of states calculation at normal precision at moderate computational cost.'
+    precise:
+        description: 'Protocol to perform a projected density of states structure calculation at high precision at higher computational cost.'
+    fast:
+        description: 'Protocol to perform a projected density of states structure calculation at low precision at minimal computational cost for testing purposes.'
