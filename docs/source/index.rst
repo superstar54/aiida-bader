@@ -10,6 +10,7 @@ AiiDA plugin for `Bader <https://theory.cm.utexas.edu/henkelman/code/bader/>`_ c
 
    quick_start
    installation
+   qeapp.rst
 
 
 
