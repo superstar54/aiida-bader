@@ -33,6 +33,7 @@ setup(
         "aiida-worktree",
         "aiida-quantumespresso~=4.4",
         "aiida-cp2k",
+        "weas-widget",
         "pytest",
         "pytest-cov",
         "pre-commit",
