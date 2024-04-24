@@ -18,7 +18,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="aiida-bader",
-    version="0.0.1",
+    version="0.0.5",
     description="AiiDA plugin for bader code.",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -52,7 +52,9 @@ setup(
             "bader = aiida_bader.qeapp:bader",
         ],
     },
-    package_data={},
+    package_data={
+        "aiida_bader.workchains.protocols": ["bader.yaml"],
+    },
     python_requires=">=3.9",
     test_suite="setup.test_suite",
 )

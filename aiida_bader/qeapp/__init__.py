@@ -1,5 +1,7 @@
 from aiidalab_qe.common.panel import OutlinePanel
-from aiidalab_widgets_base import ComputationalResourcesWidget
+from aiidalab_qe.common.widgets import (
+    QEAppComputationalResourcesWidget as ComputationalResourcesWidget,
+)
 
 from .result import Result
 from .workchain import workchain_and_builder
