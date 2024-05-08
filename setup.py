@@ -30,7 +30,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "aiida-core",
-        "aiida-worktree",
+        "aiida-workgraph",
         "aiida-quantumespresso~=4.4",
         "aiida-cp2k",
         "weas-widget",
