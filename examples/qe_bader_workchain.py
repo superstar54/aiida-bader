@@ -10,8 +10,8 @@ QeBaderWorkChain = WorkflowFactory("bader.qe")
 load_profile()
 # ===============================================================================
 # load the codes
-pw_code = load_code("pw-7.2@localhost")
-pp_code = load_code("pp-7.2@localhost")
+pw_code = load_code("qe-7.2-pw@localhost")
+pp_code = load_code("qe-7.2-pp@localhost")
 bader_code = load_code("bader@localhost")
 
 
@@ -23,10 +23,27 @@ structure = StructureData(ase=h2o)
 
 
 overrides = {
-    "pp": {
+    "pp_valence": {
         "parameters": Dict(
             dict={
                 "INPUTPP": {"plot_num": 21},
+                "PLOT": {"iflag": 3},
+            }
+        ),
+        "metadata": {
+            "options": {
+                "resources": {
+                    "num_machines": 1,
+                    "num_mpiprocs_per_machine": 2,
+                },
+                "max_wallclock_seconds": 3600,
+            }
+        },
+    },
+    "pp_all": {
+        "parameters": Dict(
+            dict={
+                "INPUTPP": {"plot_num": 0},
                 "PLOT": {"iflag": 3},
             }
         ),

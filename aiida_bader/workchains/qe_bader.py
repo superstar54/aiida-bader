@@ -120,11 +120,19 @@ class QeBaderWorkChain(ProtocolMixin, WorkChain):
         )
         scf["pw"].pop("structure", None)
 
-        metadata_pp = inputs.get("pp", {}).get("metadata", {"options": {}})
+        metadata_pp_valence = inputs.get("pp_valence", {}).get(
+            "metadata", {"options": {}}
+        )
+        metadata_pp_all = inputs.get("pp_all", {}).get("metadata", {"options": {}})
         metadata_bader = inputs.get("bader", {}).get("metadata", {"options": {}})
 
         if options:
-            metadata_pp["options"] = recursive_merge(metadata_pp["options"], options)
+            metadata_pp_valence["options"] = recursive_merge(
+                metadata_pp_valence["options"], options
+            )
+            metadata_pp_all["options"] = recursive_merge(
+                metadata_pp_all["options"], options
+            )
             metadata_bader["options"] = recursive_merge(
                 metadata_bader["options"], options
             )
@@ -132,11 +140,17 @@ class QeBaderWorkChain(ProtocolMixin, WorkChain):
         builder = cls.get_builder()
         builder.structure = structure
         builder.scf = scf
-        builder.pp.code = pp_code  # pylint: disable=no-member
-        builder.pp.parameters = orm.Dict(
-            inputs.get("pp", {}).get("parameters")
+        builder.pp_valence.code = pp_code  # pylint: disable=no-member
+        builder.pp_valence.parameters = orm.Dict(
+            inputs.get("pp_valence", {}).get("parameters")
         )  # pylint: disable=no-member
-        builder.pp.metadata = metadata_pp  # pylint: disable=no-member
+        builder.pp_valence.metadata = metadata_pp_valence  # pylint: disable=no-member
+        #
+        builder.pp_all.code = pp_code  # pylint: disable=no-member
+        builder.pp_all.parameters = orm.Dict(
+            inputs.get("pp_all", {}).get("parameters")
+        )  # pylint: disable=no-member
+        builder.pp_all.metadata = metadata_pp_all  # pylint: disable=no-member
         builder.bader.code = bader_code  # pylint: disable=no-member
         builder.bader.parameters = orm.Dict(
             inputs.get("bader", {}).get("parameters")
