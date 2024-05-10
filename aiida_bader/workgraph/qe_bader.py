@@ -10,9 +10,17 @@ def QeBaderWorkGraph():
     from aiida_bader.calculations import BaderCalculation
 
     wg = WorkGraph("charge-density")
-    pw_node = wg.nodes.new(PwBaseWorkChain, name="pw_base")
-    pp_node = wg.nodes.new(PpCalculation, name="pp", 
-                           parent_folder=pw_node.outputs["remote_folder"])
-    wg.nodes.new(BaderCalculation, name="bader",
-                                charge_density_folder=pp_node.outputs["remote_folder"])
+    pw_node = wg.nodes.new(PwBaseWorkChain, name="scf")
+    pp_valence = wg.nodes.new(
+        PpCalculation, name="pp_valence", parent_folder=pw_node.outputs["remote_folder"]
+    )
+    pp_all = wg.nodes.new(
+        PpCalculation, name="pp_all", parent_folder=pw_node.outputs["remote_folder"]
+    )
+    wg.nodes.new(
+        BaderCalculation,
+        name="bader",
+        charge_density_folder=pp_valence.outputs["remote_folder"],
+        reference_charge_density_folder=pp_all.outputs["remote_folder"],
+    )
     return wg
