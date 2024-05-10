@@ -38,21 +38,39 @@ class QeBaderWorkChain(ProtocolMixin, WorkChain):
                 "populate_defaults": False,
             },
         )
-        spec.expose_inputs(PpCalculation, namespace="pp", exclude=["parent_folder"])
         spec.expose_inputs(
-            BaderCalculation, namespace="bader", exclude=["charge_density_folder"]
+            PpCalculation, namespace="pp_valence", exclude=["parent_folder"]
+        )
+        spec.expose_inputs(PpCalculation, namespace="pp_all", exclude=["parent_folder"])
+        spec.expose_inputs(
+            BaderCalculation,
+            namespace="bader",
+            exclude=["charge_density_folder", "reference_charge_density_folder"],
         )
 
-        spec.outline(cls.run_pw, cls.run_pp, cls.run_bader, cls.return_results)
+        spec.outline(
+            cls.run_pw,
+            cls.run_pp,
+            cls.run_bader,
+            cls.return_results,
+        )
 
         spec.expose_outputs(PwBaseWorkChain, namespace="scf")
-        spec.expose_outputs(PpCalculation, namespace="pp")
+        spec.expose_outputs(PpCalculation, namespace="pp_valence")
+        spec.expose_outputs(PpCalculation, namespace="pp_all")
         spec.expose_outputs(BaderCalculation, namespace="bader")
 
         spec.exit_code(903, "ERROR_PARSING_PW_OUTPUT", "Error while parsing PW output")
-        spec.exit_code(904, "ERROR_PARSING_PP_OUTPUT", "Error while parsing PP output")
         spec.exit_code(
-            905, "ERROR_PARSING_BADER_OUTPUT", "Error while parsing bader output"
+            904,
+            "ERROR_PARSING_PP_VALENCE_OUTPUT",
+            "Error while parsing PP_VALENCE output",
+        )
+        spec.exit_code(
+            905, "ERROR_PARSING_PP_ALL_OUTPUT", "Error while parsing PP_ALL output"
+        )
+        spec.exit_code(
+            906, "ERROR_PARSING_BADER_OUTPUT", "Error while parsing bader output"
         )
 
     @classmethod
@@ -102,11 +120,19 @@ class QeBaderWorkChain(ProtocolMixin, WorkChain):
         )
         scf["pw"].pop("structure", None)
 
-        metadata_pp = inputs.get("pp", {}).get("metadata", {"options": {}})
+        metadata_pp_valence = inputs.get("pp_valence", {}).get(
+            "metadata", {"options": {}}
+        )
+        metadata_pp_all = inputs.get("pp_all", {}).get("metadata", {"options": {}})
         metadata_bader = inputs.get("bader", {}).get("metadata", {"options": {}})
 
         if options:
-            metadata_pp["options"] = recursive_merge(metadata_pp["options"], options)
+            metadata_pp_valence["options"] = recursive_merge(
+                metadata_pp_valence["options"], options
+            )
+            metadata_pp_all["options"] = recursive_merge(
+                metadata_pp_all["options"], options
+            )
             metadata_bader["options"] = recursive_merge(
                 metadata_bader["options"], options
             )
@@ -114,11 +140,17 @@ class QeBaderWorkChain(ProtocolMixin, WorkChain):
         builder = cls.get_builder()
         builder.structure = structure
         builder.scf = scf
-        builder.pp.code = pp_code  # pylint: disable=no-member
-        builder.pp.parameters = orm.Dict(
-            inputs.get("pp", {}).get("parameters")
+        builder.pp_valence.code = pp_code  # pylint: disable=no-member
+        builder.pp_valence.parameters = orm.Dict(
+            inputs.get("pp_valence", {}).get("parameters")
         )  # pylint: disable=no-member
-        builder.pp.metadata = metadata_pp  # pylint: disable=no-member
+        builder.pp_valence.metadata = metadata_pp_valence  # pylint: disable=no-member
+        #
+        builder.pp_all.code = pp_code  # pylint: disable=no-member
+        builder.pp_all.parameters = orm.Dict(
+            inputs.get("pp_all", {}).get("parameters")
+        )  # pylint: disable=no-member
+        builder.pp_all.metadata = metadata_pp_all  # pylint: disable=no-member
         builder.bader.code = bader_code  # pylint: disable=no-member
         builder.bader.parameters = orm.Dict(
             inputs.get("bader", {}).get("parameters")
@@ -142,20 +174,29 @@ class QeBaderWorkChain(ProtocolMixin, WorkChain):
         # TODO extract number of core electrons from the pw pseudopotential
 
         try:
-            pp_inputs = AttributeDict(self.exposed_inputs(PpCalculation, "pp"))
-            pp_inputs["parent_folder"] = self.ctx.pw_calc.outputs.remote_folder
+            pp_valence_inputs = AttributeDict(
+                self.exposed_inputs(PpCalculation, "pp_valence")
+            )
+            pp_valence_inputs["parent_folder"] = self.ctx.pw_calc.outputs.remote_folder
+            pp_all_inputs = AttributeDict(self.exposed_inputs(PpCalculation, "pp_all"))
+            pp_all_inputs["parent_folder"] = self.ctx.pw_calc.outputs.remote_folder
         except Exception as exc:  # pylint: disable=broad-except
             self.report(f'Encountered exception "{str(exc)}" while parsing PW output')
             return self.exit_codes.ERROR_PARSING_PW_OUTPUT  # pylint: disable=no-member
 
-        pp_inputs["metadata"]["call_link_label"] = "call_pp_calc"
+        pp_valence_inputs["metadata"]["call_link_label"] = "call_pp_valence_calc"
+        pp_all_inputs["metadata"]["call_link_label"] = "call_pp_all_calc"
 
         # Create the calculation process and launch it
-        running = self.submit(PpCalculation, **pp_inputs)
+        pp_valence_running = self.submit(PpCalculation, **pp_valence_inputs)
+        pp_all_running = self.submit(PpCalculation, **pp_valence_inputs)
         self.report(
-            f"Running PpCalculation<{running.pk}> to compute the charge-density"
+            f"Running PpCalculation<{pp_valence_running.pk}> to compute the valence charge-density"
         )
-        return ToContext(pp_calc=running)
+        self.report(
+            f"Running PpCalculation<{pp_all_running.pk}> to compute the all-electron charge-density"
+        )
+        return ToContext(pp_valence_calc=pp_valence_running, pp_all_calc=pp_all_running)
 
     def run_bader(self):
         """Parse the PP ouputs cube file, and submit bader calculation."""
@@ -163,7 +204,10 @@ class QeBaderWorkChain(ProtocolMixin, WorkChain):
             bader_inputs = AttributeDict(self.exposed_inputs(BaderCalculation, "bader"))
             bader_inputs[
                 "charge_density_folder"
-            ] = self.ctx.pp_calc.outputs.remote_folder
+            ] = self.ctx.pp_valence_calc.outputs.remote_folder
+            bader_inputs[
+                "reference_charge_density_folder"
+            ] = self.ctx.pp_all_calc.outputs.remote_folder
         except Exception as exc:  # pylint: disable=broad-except
             self.report(f'Encountered exception "{str(exc)}" while parsing PP output')
             return self.exit_codes.ERROR_PARSING_PP_OUTPUT  # pylint: disable=no-member
@@ -184,7 +228,14 @@ class QeBaderWorkChain(ProtocolMixin, WorkChain):
                 self.exposed_outputs(self.ctx.pw_calc, PwBaseWorkChain, namespace="scf")
             )
             self.out_many(
-                self.exposed_outputs(self.ctx.pp_calc, PpCalculation, namespace="pp")
+                self.exposed_outputs(
+                    self.ctx.pp_valence_calc, PpCalculation, namespace="pp_valence"
+                )
+            )
+            self.out_many(
+                self.exposed_outputs(
+                    self.ctx.pp_all_calc, PpCalculation, namespace="pp_all"
+                )
             )
             self.out_many(
                 self.exposed_outputs(

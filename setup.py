@@ -18,7 +18,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="aiida-bader",
-    version="0.0.5",
+    version="0.0.6",
     description="AiiDA plugin for bader code.",
     long_description=README,
     long_description_content_type="text/markdown",
