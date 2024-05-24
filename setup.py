@@ -18,11 +18,11 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="aiida-bader",
-    version="0.0.6",
+    version="0.0.7",
     description="AiiDA plugin for bader code.",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/superstart54/aiida-bader",
+    url="https://github.com/superstar54/aiida-bader",
     author="Xing Wang",
     author_email="xingwang1991@gmail.com",
     license="MIT License",
@@ -31,7 +31,7 @@ setup(
     install_requires=[
         "aiida-core",
         "aiida-workgraph",
-        "aiida-quantumespresso~=4.4",
+        "aiida-quantumespresso",
         "aiida-cp2k",
         "weas-widget",
         "pytest",
