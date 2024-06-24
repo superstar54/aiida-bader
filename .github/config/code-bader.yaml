@@ -5,3 +5,4 @@ default_calc_job_plugin: bader
 computer: localhost
 prepend_text: ' '
 append_text: ' '
+with_mpi: false

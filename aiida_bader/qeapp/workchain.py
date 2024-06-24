@@ -1,6 +1,7 @@
 from aiida.plugins import WorkflowFactory
 from aiida_quantumespresso.common.types import ElectronicType, SpinType
 from aiida import orm
+from aiidalab_qe.plugins.utils import set_component_resources
 
 QeBaderWorkChain = WorkflowFactory("bader.qe")
 
@@ -31,13 +32,18 @@ def check_codes(pw_code, pp_code, bader_code):
             "Bader calculations rely on large files that are not retrieved by AiiDA."
         )
 
+def update_resources(builder, codes):
+    set_component_resources(builder.scf.pw, codes.get("pw"))
+    set_component_resources(builder.pp_valence, codes.get("pp"))
+    set_component_resources(builder.pp_all, codes.get("pp"))
+
 
 def get_builder(codes, structure, parameters, **kwargs):
     from copy import deepcopy
 
-    pw_code = codes.get("pw")
-    pp_code = codes.get("pp")
-    bader_code = codes.get("bader")
+    pw_code = codes.get("pw")["code"]
+    pp_code = codes.get("pp")["code"]
+    bader_code = codes.get("bader")["code"]
     check_codes(pw_code, pp_code, bader_code)
     protocol = parameters["workchain"]["protocol"]
 
@@ -45,22 +51,34 @@ def get_builder(codes, structure, parameters, **kwargs):
 
     overrides = {
         "scf": scf_overrides,
-        "pp": {
+        "pp_valence": {
             "parameters": orm.Dict(
                 {
                     "INPUTPP": {"plot_num": 21},
                     "PLOT": {"iflag": 3},
                 }
             ),
-            "metadata": {
-                "options": {
-                    "resources": {
-                        "num_machines": 1,
-                        "num_mpiprocs_per_machine": 1,
-                    },
-                }
-            },
         },
+        "pp_all": {
+            "parameters": orm.Dict(
+                {
+                    "INPUTPP": {"plot_num": 0},
+                    "PLOT": {"iflag": 3},
+                }
+            ),
+        },
+        "bader": {
+        "metadata": {
+            "options": {
+                "withmpi": False,
+                "resources": {
+                    "num_machines": 1,
+                    "num_mpiprocs_per_machine": 1,
+                },
+                "max_wallclock_seconds": 3600,
+            }
+        },
+    }
     }
     if pp_code is not None and bader_code is not None:
         builder = QeBaderWorkChain.get_builder_from_protocol(
@@ -77,6 +95,8 @@ def get_builder(codes, structure, parameters, **kwargs):
         )
     else:
         raise ValueError("The pp_code and bader_code are required.")
+    # update resources
+    update_resources(builder, codes)
     return builder
 
 

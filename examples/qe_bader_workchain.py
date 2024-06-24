@@ -10,8 +10,8 @@ QeBaderWorkChain = WorkflowFactory("bader.qe")
 load_profile()
 # ===============================================================================
 # load the codes
-pw_code = load_code("qe-7.2-pw@localhost")
-pp_code = load_code("qe-7.2-pp@localhost")
+pw_code = load_code("pw-7.2@localhost")
+pp_code = load_code("pp-7.2@localhost")
 bader_code = load_code("bader@localhost")
 
 
@@ -57,6 +57,18 @@ overrides = {
             }
         },
     },
+    "bader": {
+        "metadata": {
+            "options": {
+                "withmpi": False,
+                "resources": {
+                    "num_machines": 1,
+                    "num_mpiprocs_per_machine": 1,
+                },
+                "max_wallclock_seconds": 3600,
+            }
+        },
+    }
 }
 
 builder = QeBaderWorkChain.get_builder_from_protocol(

@@ -11,3 +11,4 @@ prepend_text: |
 
     export OMP_NUM_THREADS=1
 append_text: ' '
+with_mpi: false
