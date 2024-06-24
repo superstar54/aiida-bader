@@ -32,6 +32,7 @@ def check_codes(pw_code, pp_code, bader_code):
             "Bader calculations rely on large files that are not retrieved by AiiDA."
         )
 
+
 def update_resources(builder, codes):
     set_component_resources(builder.scf.pw, codes.get("pw"))
     set_component_resources(builder.pp_valence, codes.get("pp"))
@@ -68,17 +69,17 @@ def get_builder(codes, structure, parameters, **kwargs):
             ),
         },
         "bader": {
-        "metadata": {
-            "options": {
-                "withmpi": False,
-                "resources": {
-                    "num_machines": 1,
-                    "num_mpiprocs_per_machine": 1,
-                },
-                "max_wallclock_seconds": 3600,
-            }
+            "metadata": {
+                "options": {
+                    "withmpi": False,
+                    "resources": {
+                        "num_machines": 1,
+                        "num_mpiprocs_per_machine": 1,
+                    },
+                    "max_wallclock_seconds": 3600,
+                }
+            },
         },
-    }
     }
     if pp_code is not None and bader_code is not None:
         builder = QeBaderWorkChain.get_builder_from_protocol(

@@ -68,7 +68,7 @@ overrides = {
                 "max_wallclock_seconds": 3600,
             }
         },
-    }
+    },
 }
 
 builder = QeBaderWorkChain.get_builder_from_protocol(

@@ -73,7 +73,7 @@ jobs:
             run: sudo apt update && sudo apt install --no-install-recommends libfftw3-dev quantum-espresso
 
         -   name: Install Python dependencies
-            run: pip install -e .
+            run: pip install -e .[pre-commit,tests]
 
         -   name: Create AiiDA profile
             run: verdi setup -n --config .github/config/profile.yaml
