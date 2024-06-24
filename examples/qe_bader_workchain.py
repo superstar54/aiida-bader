@@ -1,5 +1,5 @@
 from aiida import load_profile
-from aiida.orm import Dict, KpointsData, StructureData, load_code, load_group, load_node
+from aiida.orm import Dict, StructureData, load_code
 from ase.build import molecule
 from aiida.plugins import WorkflowFactory
 from aiida.engine import submit
