@@ -1,0 +1,84 @@
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "aiida-bader"
+dynamic = ["version"]  # read from aiida_workgraph/__init__.py
+description = "Collections of node-based workflow created using aiida-workgraph."
+authors = [{name = "Xing Wang", email = "xingwang1991@gmail.com"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Framework :: AiiDA",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering"
+]
+keywords = ["aiida", "bader", "quantum-espresso", "cp2k"]
+requires-python = ">=3.9"
+dependencies = [
+    "aiida-core",
+    "aiida-workgraph",
+    "aiida-quantumespresso",
+    "aiida-cp2k",
+    "weas-widget",
+]
+
+[project.urls]
+Documentation = "https://aiida-bader.readthedocs.io"
+Source = "https://github.com/superstar54/aiida-bader"
+
+[project.optional-dependencies]
+docs = [
+    "sphinx_rtd_theme",
+    "sphinx~=7.2",
+    "sphinx-copybutton~=0.5.0",
+    "sphinx-design~=0.5.0",
+    "sphinx-notfound-page~=1.0",
+    "sphinxext-rediraffe~=0.2.4",
+    "sphinx-intl~=2.1.0",
+    "myst-nb~=1.0.0",
+    "nbsphinx",
+]
+pre-commit = [
+    "pre-commit~=2.2",
+    "pylint~=2.17.4",
+]
+tests = [
+    "pytest~=7.0",
+    "pytest-cov~=2.7,<2.11",
+]
+
+
+
+[project.entry-points."aiida.calculations"]
+"bader" = "aiida_bader.calculations:BaderCalculation"
+
+[project.entry-points."aiida.parsers"]
+"bader" = "aiida_bader.parsers:BaderParser"
+
+[project.entry-points."aiida.workflows"]
+"bader.qe" = "aiida_bader.workchains:QeBaderWorkChain"
+
+[project.entry-points."aiida.properties"]
+"bader" = "aiida_bader.qeapp:bader"
+
+
+[tool.flit.sdist]
+include = ["aiida_bader/workchains/protocols/bader.yaml"]
+exclude = [
+    "docs/",
+    "tests/",
+    "examples/",
+]
+
+[tool.pylint.format]
+max-line-length = 120
