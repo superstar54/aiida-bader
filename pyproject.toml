@@ -68,7 +68,7 @@ tests = [
 [project.entry-points."aiida.workflows"]
 "bader.qe" = "aiida_bader.workchains:QeBaderWorkChain"
 
-[project.entry-points."aiida.properties"]
+[project.entry-points."aiidalab_qe.properties"]
 "bader" = "aiida_bader.qeapp:bader"
 
 
