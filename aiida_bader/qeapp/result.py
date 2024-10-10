@@ -23,24 +23,11 @@ class Result(ResultPanel):
         }
         self.structure_view = WeasWidget(guiConfig=guiConfig)
         self.result_table.observe(self._process_row_index, "row_index")
-        self.structure_view_ready = False
 
     def _process_row_index(self, change):
         if change["new"] is not None:
             selected_atoms_indices = [self.result_table.data[change["new"] + 1][0]]
             self.structure_view.avr.selected_atoms_indices = selected_atoms_indices
-            # trigger the resize event to update the view
-            if not self.structure_view_ready:
-                self.structure_view._widget.send_js_task(
-                    {"name": "tjs.onWindowResize", "kwargs": {}}
-                )
-                self.structure_view._widget.send_js_task(
-                    {
-                        "name": "tjs.updateCameraAndControls",
-                        "kwargs": {"direction": [0, -100, 0]},
-                    }
-                )
-                self.structure_view_ready = True
 
     def _update_view(self):
         self.structure = self.node.inputs.bader.structure
