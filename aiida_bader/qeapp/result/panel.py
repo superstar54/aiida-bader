@@ -18,9 +18,9 @@ class BaderResultsPanel(ResultsPanel[BaderResultsModel]):
         self._populate_table()
 
         gui_config = {
-            "enabled": True,
-            "components": {"atomsControl": True, "buttons": True},
+            "components": {"enabled": True, "atomsControl": True, "buttons": True},
             "buttons": {
+                "enabled": True,
                 "fullscreen": True,
                 "download": True,
                 "measurement": True,
@@ -38,12 +38,32 @@ class BaderResultsPanel(ResultsPanel[BaderResultsModel]):
             {"field": "site_index", "headerName": "Site Index", "editable": False},
             {"field": "element", "headerName": "Element", "editable": False},
             {"field": "bader_charge", "headerName": "Bader Charge", "editable": False},
+            {
+                "field": "charge_diff",
+                "headerName": "Bader charge difference",
+                "editable": False,
+            },
         ]
         data = []
 
-        for i, kind in enumerate(self._model.site_kinds):
+        for i, site in enumerate(self._model.structure.sites):
             charge = self._model.bader_charges[i]
-            data.append({"site_index": i, "element": kind, "bader_charge": charge})
+            kind_name = site.kind_name
+            if kind_name in self._model.z_valencces:
+                z_valence = self._model.z_valencces[kind_name]
+                charge_diff = charge - z_valence
+            else:
+                charge_diff = None
+            data.append(
+                {
+                    "site_index": i,
+                    "element": kind_name,
+                    "bader_charge": round(charge, 3),
+                    "charge_diff": round(charge_diff, 3)
+                    if charge_diff is not None
+                    else None,
+                }
+            )
 
         self.result_table.from_data(
             data,
