@@ -29,7 +29,8 @@ dependencies = [
     "aiida-workgraph",
     "aiida-quantumespresso",
     "aiida-cp2k",
-    "weas-widget>=0.1.4",
+    "weas-widget>=0.1.25",
+    "table-widget>=0.0.3"
 ]
 
 [project.urls]
