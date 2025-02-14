@@ -19,7 +19,7 @@ For this tutorial task, please use the `From Examples` tab, and select the LiCoO
 
 Click the `Confirm` button to proceed.
 
-.. figure:: /_static/images/bader_step_1.png
+.. figure:: _static/images/bader_step_1.png
    :align: center
 
 
@@ -32,7 +32,7 @@ In the **Basic Settings** tab, set the following parameters:
 - Set **Electronic Type** to ``Insulator``
 - In the **properties** section, select ``Bader charge analysis``
 
-.. image:: ../_static/images/bader_step_2_basic_setting.png
+.. image:: _static/images/bader_step_2_basic_setting.png
    :align: center
 
 
@@ -51,7 +51,7 @@ In this small system, we can use the default `localhost` computer to run the cal
 Set the number of CPUs/nodde to 4.
 
 
-.. image:: ../_static/images/bader_step_3.png
+.. image:: _static/images/bader_step_3.png
    :align: center
 
 
@@ -78,7 +78,7 @@ Here is the result of the calculation. It includes:
 Click on the row above to highlight the specific atom whose Bader charge is being calculated.
 
 
-.. figure:: /_static/images/bader_step_4_xps_tab.png
+.. figure:: _static/images/bader_step_4_xps_tab.png
    :align: center
 
 

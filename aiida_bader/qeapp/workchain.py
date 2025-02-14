@@ -1,7 +1,7 @@
 from aiida.plugins import WorkflowFactory
 from aiida_quantumespresso.common.types import ElectronicType, SpinType
 from aiida import orm
-from aiidalab_qe.plugins.utils import set_component_resources
+from aiidalab_qe.utils import set_component_resources
 
 QeBaderWorkChain = WorkflowFactory("bader.qe")
 
