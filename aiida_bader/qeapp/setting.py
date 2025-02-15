@@ -52,12 +52,15 @@ class ConfigurationSettingPanel(
             ),
             ipw.HTML(
                 f"""
-                <div style="line-height: 140%; margin-bottom: 10px">
-                    Please select a pseudopotential group.
-                    The pseudopotentials are downloaded from this <a href="{PSEUDO_PSL_URL}">
-                    repository</a>.
+                <div style="line-height: 1.5; margin-bottom: 12px;">
+                    <strong>Note:</strong> PAW pseudopotentials should be used for charge density calculations.
+                    Please select a <span title="Choose a PAW pseudopotential group to ensure accurate calculations.">
+                    PAW pseudopotential group</span> accordingly. <br>
+                    The pseudopotentials are available in this
+                    <a href="{PSEUDO_PSL_URL}" target="_blank" rel="noopener noreferrer">
+                    Quantum ESPRESSO repository</a>.
                 </div>
-            """
+                """
             ),
             self.pseudo_group,
         ]
