@@ -2,8 +2,20 @@ from aiida.plugins import WorkflowFactory
 from aiida_quantumespresso.common.types import ElectronicType, SpinType
 from aiida import orm
 from aiidalab_qe.utils import set_component_resources
+from aiida_bader.workchains.qe_bader import QeBaderWorkChain
 
-QeBaderWorkChain = WorkflowFactory("bader.qe")
+
+def load_pseudos(structure, pseudo_group="psl_kjpaw_pbesol"):
+    """Load the pseudos for the given structure and pseudo group."""
+    pseudo_group = (
+        orm.QueryBuilder().append(orm.Group, filters={"label": pseudo_group}).one()[0]
+    )
+    pseudos = {}
+    for kind in structure.kinds:
+        pseudos[kind.symbol] = next(
+            pseudo for pseudo in pseudo_group.nodes if pseudo.label == kind.name
+        )
+    return pseudos
 
 
 def check_codes(pw_code, pp_code, bader_code):
@@ -48,14 +60,19 @@ def get_builder(codes, structure, parameters, **kwargs):
     check_codes(pw_code, pp_code, bader_code)
     protocol = parameters["workchain"]["protocol"]
 
+    bader_parameters = parameters.get("bader", {})
+    pseudo_group = bader_parameters.pop("pseudo_group")
+    pseudos = load_pseudos(structure, pseudo_group)
+
     scf_overrides = deepcopy(parameters["advanced"])
+    scf_overrides["pw"]["pseudos"] = pseudos
 
     overrides = {
         "scf": scf_overrides,
         "pp_valence": {
             "parameters": orm.Dict(
                 {
-                    "INPUTPP": {"plot_num": 21},
+                    "INPUTPP": {"plot_num": 0},
                     "PLOT": {"iflag": 3},
                 }
             ),
@@ -63,7 +80,7 @@ def get_builder(codes, structure, parameters, **kwargs):
         "pp_all": {
             "parameters": orm.Dict(
                 {
-                    "INPUTPP": {"plot_num": 0},
+                    "INPUTPP": {"plot_num": 21},
                     "PLOT": {"iflag": 3},
                 }
             ),
