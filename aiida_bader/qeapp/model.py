@@ -48,21 +48,16 @@ class ConfigurationSettingsModel(ConfigurationSettingsModel, HasInputStructure):
         )
         return len(groups) > 0 and len(groups[0].nodes) > 0
 
-    def install_pseudos(self):
+    def install_pseudos(self, group_label):
         import os
         from pathlib import Path
         from subprocess import run
 
-        for pseudo_group in self.pseudo_group_options:
-            if not self._pseudo_group_exists(pseudo_group):
-                url = BASE_URL + pseudo_group + ".aiida"
+        url = BASE_URL + group_label + ".aiida"
+        env = os.environ.copy()
+        env["PATH"] = f"{env['PATH']}:{Path.home().joinpath('.local', 'bin')}"
 
-                env = os.environ.copy()
-                env["PATH"] = f"{env['PATH']}:{Path.home().joinpath('.local', 'bin')}"
+        def run_(*args, **kwargs):
+            return run(*args, env=env, capture_output=True, check=True, **kwargs)
 
-                def run_(*args, **kwargs):
-                    return run(
-                        *args, env=env, capture_output=True, check=True, **kwargs
-                    )
-
-                run_(["verdi", "archive", "import", url, "--no-import-group"])
+        run_(["verdi", "archive", "import", url, "--no-import-group"])

@@ -26,11 +26,14 @@ Click the `Confirm` button to proceed.
 Step 2 Configure workflow
 --------------------------------
 
-In the **Basic Settings** tab, set the following parameters:
+In the **Structure optimization** section, select ``Structure as is``.
 
-- In the **Structure optimization** section, select ``Structure as is``.
-- Set **Electronic Type** to ``Insulator``
-- In the **properties** section, select ``Bader charge analysis``
+In the Step 2.1, select ``Bader charge analysis``
+
+
+In the Step 2.2, **Basic Settings** tab, set the following parameters:
+
+- Set **Protocol** to ``Fast``
 
 .. image:: _static/images/bader_step_2_basic_setting.png
    :align: center
@@ -78,7 +81,7 @@ Here is the result of the calculation. It includes:
 Click on the row above to highlight the specific atom whose Bader charge is being calculated.
 
 
-.. figure:: _static/images/bader_step_4_xps_tab.png
+.. figure:: _static/images/bader_step_4.png
    :align: center
 
 
