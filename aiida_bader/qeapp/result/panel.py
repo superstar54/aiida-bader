@@ -42,6 +42,7 @@ class BaderResultsPanel(ResultsPanel[BaderResultsModel]):
                 "field": "charge_diff",
                 "headerName": "Bader charge difference",
                 "editable": False,
+                "width": 200,
             },
         ]
         data = []

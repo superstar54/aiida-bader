@@ -9,10 +9,8 @@ from aiida.plugins import CalculationFactory, WorkflowFactory
 from aiida_quantumespresso.common.types import ElectronicType, RestartType, SpinType
 from aiida import orm
 from aiida_quantumespresso.workflows.protocols.utils import ProtocolMixin
+from aiida_quantumespresso.workflows.pw.base import PwBaseWorkChain
 
-PwBaseWorkChain = WorkflowFactory(
-    "quantumespresso.pw.base"
-)  # pylint: disable=invalid-name
 PpCalculation = CalculationFactory("quantumespresso.pp")  # pylint: disable=invalid-name
 BaderCalculation = CalculationFactory("bader")  # pylint: disable=invalid-name
 
@@ -189,7 +187,7 @@ class QeBaderWorkChain(ProtocolMixin, WorkChain):
 
         # Create the calculation process and launch it
         pp_valence_running = self.submit(PpCalculation, **pp_valence_inputs)
-        pp_all_running = self.submit(PpCalculation, **pp_valence_inputs)
+        pp_all_running = self.submit(PpCalculation, **pp_all_inputs)
         self.report(
             f"Running PpCalculation<{pp_valence_running.pk}> to compute the valence charge-density"
         )
