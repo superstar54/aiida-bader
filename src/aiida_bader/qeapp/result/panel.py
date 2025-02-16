@@ -52,7 +52,7 @@ class BaderResultsPanel(ResultsPanel[BaderResultsModel]):
             kind_name = site.kind_name
             if kind_name in self._model.z_valencces:
                 z_valence = self._model.z_valencces[kind_name]
-                charge_diff = charge - z_valence
+                charge_diff = z_valence - charge
             else:
                 charge_diff = None
             data.append(
