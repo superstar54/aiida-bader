@@ -30,7 +30,7 @@ class ResourceSettingsModel(PluginResourceSettingsModel):
                 "bader": CodeModel(
                     name="bader",
                     description="bader",
-                    default_calc_job_plugin="bader",
+                    default_calc_job_plugin="bader.bader",
                 ),
             }
         )
