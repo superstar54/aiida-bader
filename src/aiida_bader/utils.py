@@ -1,7 +1,7 @@
 from aiida.orm import QueryBuilder, Group
 import shutil
 import subprocess
-
+from aiida.common.exceptions import NotExistent
 
 BASE_URL = "https://github.com/superstar54/aiida-bader/raw/main/data/"
 
@@ -103,19 +103,29 @@ def install_pseudos():
             print(f"Pseudopotential group '{group_label}' already exists.")
 
 
-def setup_bader_code():
-    from aiida.orm import load_code, load_computer
-    from aiida.common.exceptions import NotExistent
+def get_enabled_computer():
+    """Get an enabled computer for the current user."""
+    from aiida.orm import load_computer, User
 
-    try:
-        computer = load_computer("localhost")
-    except NotExistent:
+    user = User.collection.get_default()
+
+    for label in ["localhost", "localhost-hq"]:
         try:
-            computer = load_computer("localhost-hq")
+            computer = load_computer(label)
+            if computer.is_user_enabled(user):
+                return computer
         except NotExistent:
-            raise NotExistent(
-                "localhost or localhost-hq computer not found in the AiiDA database."
-            )
+            continue
+
+    raise NotExistent(
+        "No enabled computer found for the user: localhost or localhost-hq."
+    )
+
+
+def setup_bader_code():
+    from aiida.orm import load_code
+
+    computer = get_enabled_computer()
 
     computer_label = computer.label
 
