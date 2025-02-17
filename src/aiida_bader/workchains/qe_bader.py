@@ -10,9 +10,9 @@ from aiida_quantumespresso.common.types import ElectronicType, RestartType, Spin
 from aiida import orm
 from aiida_quantumespresso.workflows.protocols.utils import ProtocolMixin
 from aiida_quantumespresso.workflows.pw.base import PwBaseWorkChain
+from aiida_bader.calculations import BaderCalculation
 
 PpCalculation = CalculationFactory("quantumespresso.pp")  # pylint: disable=invalid-name
-BaderCalculation = CalculationFactory("bader")  # pylint: disable=invalid-name
 
 
 class QeBaderWorkChain(ProtocolMixin, WorkChain):

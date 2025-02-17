@@ -50,7 +50,7 @@ class BaderCalculation(CalcJob):
             required=False,
             help="Name of the charge density file",
         )
-        spec.inputs["metadata"]["options"]["parser_name"].default = "bader"
+        spec.inputs["metadata"]["options"]["parser_name"].default = "bader.bader"
         spec.inputs["metadata"]["options"]["resources"].default = {
             "num_machines": 1,
             "num_mpiprocs_per_machine": 1,

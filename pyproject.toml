@@ -61,10 +61,10 @@ tests = [
 
 
 [project.entry-points."aiida.calculations"]
-"bader" = "aiida_bader.calculations:BaderCalculation"
+"bader.bader" = "aiida_bader.calculations:BaderCalculation"
 
 [project.entry-points."aiida.parsers"]
-"bader" = "aiida_bader.parsers:BaderParser"
+"bader.bader" = "aiida_bader.parsers:BaderParser"
 
 [project.entry-points."aiida.workflows"]
 "bader.qe" = "aiida_bader.workchains:QeBaderWorkChain"

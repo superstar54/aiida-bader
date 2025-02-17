@@ -3,8 +3,6 @@ from aiidalab_qe.common.mixins import HasInputStructure
 from aiidalab_qe.common.panel import ConfigurationSettingsModel
 from aiida.orm import QueryBuilder, Group
 
-BASE_URL = "https://github.com/superstar54/aiida-bader/raw/main/data/"
-
 
 class ConfigurationSettingsModel(ConfigurationSettingsModel, HasInputStructure):
     title = "Bader charge"
@@ -36,28 +34,3 @@ class ConfigurationSettingsModel(ConfigurationSettingsModel, HasInputStructure):
     def set_model_state(self, parameters: dict):
         """"""
         self.pseudo_group = parameters.get("pseudo_group", self.pseudo_group)
-
-    def _pseudo_group_exists(self, group_label):
-        groups = (
-            QueryBuilder()
-            .append(
-                Group,
-                filters={"label": group_label},
-            )
-            .all(flat=True)
-        )
-        return len(groups) > 0 and len(groups[0].nodes) > 0
-
-    def install_pseudos(self, group_label):
-        import os
-        from pathlib import Path
-        from subprocess import run
-
-        url = BASE_URL + group_label + ".aiida"
-        env = os.environ.copy()
-        env["PATH"] = f"{env['PATH']}:{Path.home().joinpath('.local', 'bin')}"
-
-        def run_(*args, **kwargs):
-            return run(*args, env=env, capture_output=True, check=True, **kwargs)
-
-        run_(["verdi", "archive", "import", url, "--no-import-group"])
