@@ -5,6 +5,7 @@ import ipywidgets as ipw
 from aiidalab_qe.common.panel import ConfigurationSettingsPanel
 from .model import ConfigurationSettingsModel
 from aiidalab_qe.common.infobox import InAppGuide
+from aiida_bader.utils import pseudo_group_exists, install_pseudos
 
 PSEUDO_PSL_URL = "https://pseudopotentials.quantum-espresso.org/legacy_tables"
 
@@ -22,7 +23,7 @@ class ConfigurationSettingPanel(ConfigurationSettingsPanel[ConfigurationSettings
         """Checks if the selected pseudo group exists and starts downloading if missing."""
         group_label = self._model.pseudo_group
 
-        if not self._model._pseudo_group_exists(group_label):
+        if not pseudo_group_exists(group_label):
             self.pseudo_status.value = (
                 f'<div style="color: red;"><strong>Warning:</strong> '
                 f'Pseudopotential group "{group_label}" is missing. Downloading now...</div>'
@@ -36,12 +37,9 @@ class ConfigurationSettingPanel(ConfigurationSettingsPanel[ConfigurationSettings
 
     def _install_pseudo_in_background(self, group_label):
         """Downloads and installs the missing pseudopotential group in a background thread."""
-        self._model.install_pseudos(group_label)
+        install_pseudos(group_label)
 
-        # Simulate waiting for the process to complete
-        time.sleep(2)
-
-        if self._model._pseudo_group_exists(group_label):
+        if pseudo_group_exists(group_label):
             self.pseudo_status.value = f'<div style="color: green;">Pseudopotential group "{group_label}" successfully installed.</div>'
         else:
             self.pseudo_status.value = (
