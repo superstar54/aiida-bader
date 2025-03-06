@@ -7,11 +7,8 @@ import os
 from aiida.common import NotExistent, OutputParsingError
 from aiida.engine import ExitCode
 from aiida.parsers.parser import Parser
-from aiida.plugins import CalculationFactory
 from aiida.orm import ArrayData
 import numpy as np
-
-BaderCalculation = CalculationFactory("bader")  # pylint: disable=invalid-name
 
 
 class BaderParser(Parser):

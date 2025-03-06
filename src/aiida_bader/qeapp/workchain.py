@@ -1,21 +1,8 @@
-from aiida.plugins import WorkflowFactory
 from aiida_quantumespresso.common.types import ElectronicType, SpinType
 from aiida import orm
 from aiidalab_qe.utils import set_component_resources
 from aiida_bader.workchains.qe_bader import QeBaderWorkChain
-
-
-def load_pseudos(structure, pseudo_group="psl_kjpaw_pbesol"):
-    """Load the pseudos for the given structure and pseudo group."""
-    pseudo_group = (
-        orm.QueryBuilder().append(orm.Group, filters={"label": pseudo_group}).one()[0]
-    )
-    pseudos = {}
-    for kind in structure.kinds:
-        pseudos[kind.symbol] = next(
-            pseudo for pseudo in pseudo_group.nodes if pseudo.label == kind.name
-        )
-    return pseudos
+from aiida_bader.utils import load_pseudos
 
 
 def check_codes(pw_code, pp_code, bader_code):

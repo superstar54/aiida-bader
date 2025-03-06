@@ -14,7 +14,7 @@ def cli():
     pass
 
 
-@cli.command(help="Setup bader@localhost-hq in the current AiiDA database.")
+@cli.command(help="Setup bader@localhost in the current AiiDA database.")
 def setup_code():
 
     load_profile()
@@ -29,7 +29,7 @@ def setup_pseudos():
 
 
 @cli.command(
-    help="Setup bader@localhost-hq and import the PAW pseudopotentials into the AiiDA database."
+    help="Setup bader@localhost and import the PAW pseudopotentials into the AiiDA database."
 )
 def post_install():
     from aiida_bader.utils import install_pseudos, setup_bader_code

@@ -6,6 +6,7 @@ from aiidalab_qe.common.panel import ResultsPanel
 from weas_widget import WeasWidget
 from .model import BaderResultsModel
 from table_widget import TableWidget  # Your custom TableWidget
+from aiidalab_qe.common.infobox import InAppGuide
 
 
 class BaderResultsPanel(ResultsPanel[BaderResultsModel]):
@@ -31,7 +32,10 @@ class BaderResultsPanel(ResultsPanel[BaderResultsModel]):
 
         self.result_table.observe(self._on_row_index_change, "selectedRowId")
 
-        self.children = [self._create_layout()]
+        self.children = [
+            InAppGuide(identifier="bader-charge-results"),
+            self._create_layout(),
+        ]
 
     def _populate_table(self):
         columns = [

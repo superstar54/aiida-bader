@@ -5,6 +5,7 @@ from .workchain import workchain_and_builder
 from .result import BaderResultsPanel, BaderResultsModel
 from .setting import ConfigurationSettingPanel
 from .model import ConfigurationSettingsModel
+from pathlib import Path
 
 
 class PluginOutline(PluginOutline):
@@ -26,4 +27,5 @@ bader = {
         "panel": BaderResultsPanel,
         "model": BaderResultsModel,
     },
+    "guides": Path(__file__).resolve().parent / "guides",
 }
