@@ -1,0 +1,139 @@
+<div id="guide-header">
+    You've activated the Bader charge in-app guide. In this guide, you will learn how to
+    use the app to compute the Bader charge of bulk LiCoO2. <br>
+    Click on <b>Step 1: Select structure</b> and follow the instructions to proceed.
+  </div>
+
+  <div id="structure-step">
+    In the structure selection step, we select the LiCoO2 structure from the examples. <br>
+    Once selected, we can view the structure in the viewer below.
+    <div class="alert alert-success">
+      <h4>Tasks</h4>
+    <ul>
+      <li><b>Click</b> on the "From examples" tab</li>
+      <li><b>Select</b> the LiCoO2 structure in the dropdown menu</li>
+      <li>Click the <b>Confirm</b> button to proceed</li>
+    </ul>
+      <div class="alert alert-warning">
+        <b>Warning:</b> Changes after confirmation will reset the following steps.
+      </div>
+    </div>
+  </div>
+
+  <div id="configuration-step">
+    In the configuration step, we define the parameters needed to perform our phonon calculation.
+    <div class="alert alert-success">
+      <h4>Tasks</h4>
+      <ol>
+        <li>Select <b>Full geometry</b>, i.e. we relaxed the structure optimizing both cell parameters and atom positions</li>
+        <li>Open <b>step 2.1</b> for further instructions</li>
+      </ol>
+    </div>
+  </div>
+
+  <div id="properties-selection">
+    Here we select the properties to calculate. Each property is associated with a
+    workflow that will submit one or more calculations.
+    <div class="alert alert-success">
+      <h4>Tasks</h4>
+      <ol>
+        <li>Tick the <b>Bader charge analysis</b> checkbox</li>
+        <li>Open <b>step 2.2</b> for further instructions</li>
+      </ol>
+    </div>
+  </div>
+
+  <div id="calculation-settings">
+    Here we can customize the calculation parameters. The settings are divided
+    into several tabs:
+    <ul>
+      <li><b>Basic settings</b>: top-level calculation settings</li>
+      <li><b>Advanced settings</b>: fine-tune the calculations</li>
+      <li>
+        <b>Plugin settings</b>: parameters for plugin calculations including
+        phonon settings (Vibrational settings)
+      </li>
+    </ul>
+    Note that the app pre-configures defaults for most parameters.
+    <div class="alert alert-success">
+      <h4>Tasks</h4>
+        <ol>
+          <li>Select <b>Insulator</b> electronic type</li>
+          <li>Select <b>Fast</b> protocol</li>
+        </ol>
+    </div>
+  </div>
+
+  <div id="submission-step">
+    <p>
+      In the submission step, we define the computational resources to be used in
+      the calculations. The global resources are used to define resources across
+      all workflow calculations. Optionally, you can override the resource
+      settings for specific calculations.
+    </p>
+    <div class="alert alert-warning">
+      <b>Warning:</b> If running locally (for example, on the AiiDAlab demo
+      server), we recommend keeping nodes and CPUs at the default minimum of 1
+      each.
+    </div>
+    <p>
+      Once the resources are defined, we can optionally customize the workflow
+      label (pre-filled according to the settings of steps 1 & 2), as well as
+      provide a detailed description of the workflow. Once we are ready, we can
+      submit the workflow.
+    </p>
+    <div class="alert alert-success">
+      <h4>Tasks</h4>
+      <ol>
+        <li>Select 1 node and 1 CPU for each of the codes below</li>
+        <li><b>(Optional)</b> customize the workflow label</li>
+        <li><b>(Optional)</b> add a workflow description</li>
+        <li>Click the <b>Submit</b> button to proceed</li>
+      </ol>
+      <div class="alert alert-warning">
+        <b>Warning:</b> The workflow may take a moment to submit.
+      </div>
+    </div>
+  </div>
+
+  <div id="results-step">
+    In the final step, we can monitor the calculation and view its results. A
+    summary of calculation parameters is also provided. Raw input and output files
+    may be downloaded upon workflow completion, as well as an AiiDA archive
+    containing the full calculation provenance.
+    <div class="alert alert-success">
+      <h4>Tasks</h4>
+      <ol>
+        <li>If not already there, switch over to the <b>Status</b> panel</li>
+        <li>
+          Monitor the calculation status. Once the calculation is complete, switch over to the <b>Results</b> panel for further
+          instructions
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div id="results-panel">
+    Here in the results panel, each tab will open results pertaining to a specific
+    calculation submitted by the workflow.
+    <div class="alert alert-success">
+      See further instructions below in the <b>Bader charge</b> tab.
+    </div>
+  </div>
+
+  <div id="bader-charge-results">
+    When Bader charge results are available, the <b>Load results</b> button will become active allowing us to
+    load the results from AiiDA.
+    <div class="alert alert-success">
+      <h4>Tasks</h4>
+      <ol>
+        <li>
+          Once the calculation is complete, click on the
+          <b>Load results</b> button to load the available results
+        </li>
+        <li>
+          Click the row in the result table to highlight the specific atom for which the Bader charge is being calculated.
+        </li>
+      </ol>
+    </div>
+  </div>

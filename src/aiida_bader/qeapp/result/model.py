@@ -23,8 +23,6 @@ class BaderResultsModel(ResultsModel):
         Fetch data from the Bader calculation workchain outputs
         and store them into the model's traitlets.
         """
-        tstart = time.time()
-
         root = self.fetch_process_node()
 
         self.structure = root.inputs.bader.structure
@@ -34,7 +32,3 @@ class BaderResultsModel(ResultsModel):
         bader_charge_array = root.outputs.bader.bader.bader_charge.get_array("charge")
 
         self.bader_charges = [round(c, 2) for c in bader_charge_array]
-
-        print(
-            f"[BaderResultsModel] fetch_result took {time.time() - tstart:.2f} seconds"
-        )

@@ -6,6 +6,19 @@ import subprocess
 BASE_URL = "https://github.com/superstar54/aiida-bader/raw/main/data/"
 
 
+def load_pseudos(structure, pseudo_group="psl_kjpaw_pbesol"):
+    """Load the pseudos for the given structure and pseudo group."""
+    pseudo_group = (
+        QueryBuilder().append(Group, filters={"label": pseudo_group}).one()[0]
+    )
+    pseudos = {}
+    for kind in structure.kinds:
+        pseudos[kind.symbol] = next(
+            pseudo for pseudo in pseudo_group.nodes if pseudo.label == kind.name
+        )
+    return pseudos
+
+
 def create_bader_env():
     """Create a conda environment for bader if it does not already exist."""
 
@@ -110,12 +123,7 @@ def setup_bader_code():
     try:
         computer = load_computer("localhost")
     except NotExistent:
-        try:
-            computer = load_computer("localhost-hq")
-        except NotExistent:
-            raise NotExistent(
-                "localhost or localhost-hq computer not found in the AiiDA database."
-            )
+        raise NotExistent("localhost computer not found in the AiiDA database.")
 
     computer_label = computer.label
 

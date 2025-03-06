@@ -27,7 +27,7 @@ class BaderCalculation(CalcJob):
         spec.input(
             "charge_density_filename",
             valid_type=Str,
-            default=Str("aiida.fileout"),
+            default=lambda: Str("aiida.fileout"),
             required=False,
             help="Name of the charge density file",
         )
@@ -46,7 +46,7 @@ class BaderCalculation(CalcJob):
         spec.input(
             "reference_charge_density_filename",
             valid_type=Str,
-            default=Str("aiida.fileout"),
+            default=lambda: Str("aiida.fileout"),
             required=False,
             help="Name of the charge density file",
         )
