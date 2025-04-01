@@ -27,5 +27,8 @@ bader = {
         "panel": BaderResultsPanel,
         "model": BaderResultsModel,
     },
-    "guides": Path(__file__).resolve().parent / "guides",
+    "guides": {
+        "title": "Bader charge",
+        "path": Path(__file__).resolve().parent / "guides",
+    },
 }
