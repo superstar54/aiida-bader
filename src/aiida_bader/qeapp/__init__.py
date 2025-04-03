@@ -33,4 +33,11 @@ bader = {
         "title": "Bader charge analysis",
         "path": Path(__file__).resolve().parent / "guides",
     },
+    "metadata": {
+        "process_labels": {
+            "QeBaderWorkChain": "Bader charge workflow",
+            "PpCalculation": "Compute charge density",
+            "BaderCalculation": "Compute Bader charge",
+        }
+    },
 }
