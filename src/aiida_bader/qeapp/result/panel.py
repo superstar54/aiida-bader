@@ -27,15 +27,18 @@ class BaderResultsPanel(ResultsPanel[BaderResultsModel]):
                 "measurement": True,
             },
         }
-        self.structure_view = WeasWidget(guiConfig=gui_config)
+        self.structure_view = WeasWidget(
+            guiConfig=gui_config, viewerStyle={"width": "100%", "height": "600px"}
+        )
         self._setup_structure_view()
 
         self.result_table.observe(self._on_row_index_change, "selectedRowId")
 
-        self.children = [
-            InAppGuide(identifier="bader-charge-results"),
+        children = [
+            InAppGuide(identifier="bader-container-results"),
             self._create_layout(),
         ]
+        self.results_container.children = children
 
     def _populate_table(self):
         columns = [
@@ -107,6 +110,11 @@ class BaderResultsPanel(ResultsPanel[BaderResultsModel]):
                 <p style='margin: 5px 0; font-size: 14px;'>
                     Click on the row to highlight the specific atom for which the Bader charge is being calculated.
                 </p>
+                <p style='margin: 5px 0; font-size: 14px;'>
+                    The "Bader charge difference" is the difference between the calculated Bader charge of an atom
+                    and its nominal valence electron count. This indicates how much charge has been gained or lost
+                    relative to the neutral (valence) state
+                </p>
             </div>
             """,
             layout=ipw.Layout(margin="0 0 20px 0"),
@@ -114,8 +122,14 @@ class BaderResultsPanel(ResultsPanel[BaderResultsModel]):
 
         return ipw.HBox(
             children=[
-                ipw.VBox([table_help, self.result_table]),
-                ipw.VBox([structure_help, self.structure_view]),
+                ipw.VBox(
+                    [table_help, self.result_table],
+                    layout=ipw.Layout(width="50%", margin="0 10px 0 0"),
+                ),
+                ipw.VBox(
+                    [structure_help, self.structure_view],
+                    layout=ipw.Layout(width="50%"),
+                ),
             ],
             layout=ipw.Layout(justify_content="space-between", margin="10px"),
         )

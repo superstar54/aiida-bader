@@ -9,7 +9,7 @@ import time
 
 class BaderResultsModel(ResultsModel):
 
-    title = "Bader Charge"
+    title = "Bader charge"
     identifier = "bader"
 
     structure = tl.Instance(orm.StructureData, allow_none=True)
