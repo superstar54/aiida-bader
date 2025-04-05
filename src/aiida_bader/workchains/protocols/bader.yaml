@@ -24,11 +24,11 @@ default_inputs:
                     num_machines: 1
                 max_wallclock_seconds: 43200  # Twelve hours
                 withmpi: True
-default_protocol: moderate
+default_protocol: balanced
 protocols:
-    moderate:
-        description: 'Protocol to perform a projected density of states calculation at normal precision at moderate computational cost.'
-    precise:
+    balanced:
+        description: 'Protocol to perform a projected density of states calculation at normal precision at balanced computational cost.'
+    stringent:
         description: 'Protocol to perform a projected density of states structure calculation at high precision at higher computational cost.'
     fast:
         description: 'Protocol to perform a projected density of states structure calculation at low precision at minimal computational cost for testing purposes.'
