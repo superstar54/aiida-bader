@@ -29,6 +29,7 @@ class BaderResultsModel(ResultsModel):
         for key, pseudo in root.inputs.bader.scf.pw.pseudos.items():
             if getattr(pseudo, "z_valence", False):
                 self.z_valencces[key] = getattr(pseudo, "z_valence")
-        bader_charge_array = root.outputs.bader.bader.bader_charge.get_array("charge")
+        bader_outputs = self._get_child_outputs()
+        bader_charge_array = bader_outputs.bader.bader_charge.get_array("charge")
 
         self.bader_charges = [round(c, 2) for c in bader_charge_array]
