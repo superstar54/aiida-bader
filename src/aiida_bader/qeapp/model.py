@@ -16,7 +16,7 @@ class ConfigurationSettingsModel(ConfigurationSettingsModel, HasInputStructure):
 
     protocol = tl.Unicode(allow_none=True)
     electronic_type = tl.Unicode(allow_none=True)
-    functional = tl.Unicode()
+    functional = tl.Unicode(allow_none=True)
     pseudo_group_options = tl.List(
         trait=tl.Unicode(),
         default_value=[
