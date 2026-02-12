@@ -16,6 +16,17 @@ or when installing from source:
     git clone https://github.com/superstar54/aiida-bader
     pip install aiida-bader
 
+
+## Cite
+
+If you use the AiiDAlab QE app in your research, please cite:
+
+<div style="padding: 6px 20px 0;">
+  Wang, X., Bainglass, E., Bonacci, M., Ortega-Guerrero, A. et al.<br />
+  Making atomistic materials calculations accessible with the AiiDAlab Quantum ESPRESSO app<br />
+  <em>npj. Comput. Mater.</em> <b>12</b>, 72 (2026). <a href="https://doi.org/10.1038/s41524-025-01936-4" target="_blank">https://doi.org/10.1038/s41524-025-01936-4</a>
+</div>
+
 ## Development
 
 ### Running tests
@@ -36,6 +47,8 @@ cd aiida-bader
 pip install -e .[pre-commit]
 pre-commit install
 ```
+
+
 
 ## License
 The `aiida-bader` plugin package is released under the MIT license.
