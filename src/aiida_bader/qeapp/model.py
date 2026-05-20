@@ -9,7 +9,7 @@ class ConfigurationSettingsModel(ConfigurationSettingsModel, HasInputStructure):
     identifier = "bader"
 
     dependencies = [
-        "input_structure",
+        "structure_uuid",
         "workchain.protocol",
         "advanced.pseudos.functional",
     ]
