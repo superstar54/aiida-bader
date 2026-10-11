@@ -1,5 +1,4 @@
-"""Command line interface for the aiida-bader package.
-"""
+"""Command line interface for the aiida-bader package."""
 
 from aiida.common.exceptions import NotExistent
 import subprocess
@@ -38,6 +37,19 @@ def post_install():
 
     setup_bader_code()
     install_pseudos()
+
+
+@cli.command(help="Verify the Bader post-install setup.")
+@click.option("-p", "--profile", default="default", help="AiiDA profile name.")
+def verify_post_install(profile):
+    from aiida_bader.utils import verify_setup
+
+    load_profile(profile)
+    try:
+        verify_setup()
+    except RuntimeError as error:
+        raise click.ClickException(str(error)) from error
+    click.echo("Bader post-install setup is valid.")
 
 
 if __name__ == "__main__":
