@@ -32,13 +32,15 @@ def test_verify_post_install_reports_incomplete_setup(monkeypatch):
     assert "bader@localhost is not configured" in result.output
 
 
-def test_verify_setup_does_not_require_named_conda_environment(monkeypatch):
-    code = SimpleNamespace(filepath_executable="/usr/bin/bader")
+def test_verify_setup_does_not_require_named_conda_environment(monkeypatch, tmp_path):
+    executable = tmp_path / "bader"
+    executable.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    executable.chmod(0o755)
+    code = SimpleNamespace(filepath_executable=str(executable))
     monkeypatch.setattr(
         orm, "load_computer", lambda _label: SimpleNamespace(label="localhost")
     )
     monkeypatch.setattr(orm, "load_code", lambda _label: code)
-    monkeypatch.setattr(utils.shutil, "which", lambda _executable: "/usr/bin/bader")
     monkeypatch.setattr(utils, "pseudo_group_exists", lambda _label: True)
     monkeypatch.setattr(
         utils,
@@ -49,14 +51,36 @@ def test_verify_setup_does_not_require_named_conda_environment(monkeypatch):
     utils.verify_setup()
 
 
-def test_verify_setup_rejects_missing_registered_executable(monkeypatch):
-    code = SimpleNamespace(filepath_executable="/missing/bader")
+@pytest.mark.parametrize(
+    ("path_state", "expected_message"),
+    [
+        ("unset", "bader@localhost executable is not set"),
+        ("missing", "bader@localhost executable is missing"),
+        ("directory", "bader@localhost executable is not a file"),
+        ("not_executable", "bader@localhost executable is not executable"),
+    ],
+)
+def test_verify_setup_rejects_invalid_registered_executable(
+    monkeypatch, tmp_path, path_state, expected_message
+):
+    executable = tmp_path / "bader"
+    if path_state == "unset":
+        filepath = None
+    elif path_state == "directory":
+        executable.mkdir()
+        filepath = str(executable)
+    elif path_state == "not_executable":
+        executable.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+        executable.chmod(0o644)
+        filepath = str(executable)
+    else:
+        filepath = str(executable)
+    code = SimpleNamespace(filepath_executable=filepath)
     monkeypatch.setattr(
         orm, "load_computer", lambda _label: SimpleNamespace(label="localhost")
     )
     monkeypatch.setattr(orm, "load_code", lambda _label: code)
-    monkeypatch.setattr(utils.shutil, "which", lambda _executable: None)
     monkeypatch.setattr(utils, "pseudo_group_exists", lambda _label: True)
 
-    with pytest.raises(RuntimeError, match="Bader executable is missing"):
+    with pytest.raises(RuntimeError, match=expected_message):
         utils.verify_setup()

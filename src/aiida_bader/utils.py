@@ -1,5 +1,7 @@
+import os
 import shutil
 import subprocess
+from pathlib import Path
 
 from aiida.orm import Group, QueryBuilder
 
@@ -175,11 +177,17 @@ def verify_setup():
             failures.append(f"AiiDA code bader@{computer.label} is not configured")
         else:
             executable = code.filepath_executable
-            if not executable or not shutil.which(executable):
-                failures.append(
-                    f"Bader executable is missing or not executable: "
-                    f"{executable or '<unset>'}"
-                )
+            if not executable:
+                failures.append("AiiDA code bader@localhost executable is not set")
+            else:
+                filepath = Path(executable)
+                failure_prefix = "AiiDA code bader@localhost executable is"
+                if not filepath.exists():
+                    failures.append(f"{failure_prefix} missing: {executable}")
+                elif not filepath.is_file():
+                    failures.append(f"{failure_prefix} not a file: {executable}")
+                elif not os.access(filepath, os.X_OK):
+                    failures.append(f"{failure_prefix} not executable: {executable}")
 
     for group_label in BADER_PSEUDO_GROUPS:
         if not pseudo_group_exists(group_label):
