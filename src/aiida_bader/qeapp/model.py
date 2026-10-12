@@ -1,4 +1,6 @@
 import traitlets as tl
+
+from aiida_bader.utils import BADER_PSEUDO_GROUPS
 from aiidalab_qe.common.mixins import HasInputStructure
 from aiidalab_qe.common.panel import PanelModel
 
@@ -18,10 +20,7 @@ class BaderConfigurationSettingsModel(PanelModel, HasInputStructure):
     functional = tl.Unicode(allow_none=True)
     pseudo_group_options = tl.List(
         trait=tl.Unicode(),
-        default_value=[
-            "psl_kjpaw_pbe",
-            "psl_kjpaw_pbesol",
-        ],
+        default_value=list(BADER_PSEUDO_GROUPS),
     )
     pseudo_group = tl.Unicode("psl_kjpaw_pbesol")
 

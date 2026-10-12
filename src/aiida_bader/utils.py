@@ -1,9 +1,12 @@
-from aiida.orm import QueryBuilder, Group
+import os
 import shutil
 import subprocess
+from pathlib import Path
 
+from aiida.orm import Group, QueryBuilder
 
 BASE_URL = "https://github.com/superstar54/aiida-bader/raw/main/data/"
+BADER_PSEUDO_GROUPS = ("psl_kjpaw_pbe", "psl_kjpaw_pbesol")
 
 
 def load_pseudos(structure, pseudo_group="psl_kjpaw_pbesol"):
@@ -95,6 +98,7 @@ def get_bader_executable():
 def install_pseudos():
     import os
     from pathlib import Path
+
     from aiida_bader.qeapp.model import BaderConfigurationSettingsModel
 
     config_instance = BaderConfigurationSettingsModel()
@@ -116,8 +120,8 @@ def install_pseudos():
 
 
 def setup_bader_code():
-    from aiida.orm import load_code, load_computer
     from aiida.common.exceptions import NotExistent
+    from aiida.orm import load_code, load_computer
 
     try:
         computer = load_computer("localhost")
@@ -133,7 +137,7 @@ def setup_bader_code():
         create_bader_env()
         bader_path = get_bader_executable()
 
-        prepend_text = f'eval "$(conda shell.posix hook)"\nconda activate bader\nexport OMP_NUM_THREADS=1'
+        prepend_text = 'eval "$(conda shell.posix hook)"\nconda activate bader\nexport OMP_NUM_THREADS=1'
         command = [
             "verdi",
             "code",
@@ -154,3 +158,40 @@ def setup_bader_code():
 
         subprocess.run(command, check=True)
         print(f"Code bader@{computer_label} successfully set up.")
+
+
+def verify_setup():
+    """Verify the registered Bader executable and pseudo groups are ready."""
+    from aiida.common.exceptions import NotExistent
+    from aiida.orm import load_code, load_computer
+
+    failures = []
+    try:
+        computer = load_computer("localhost")
+    except NotExistent:
+        failures.append("AiiDA computer localhost is not configured")
+    else:
+        try:
+            code = load_code(f"bader@{computer.label}")
+        except NotExistent:
+            failures.append(f"AiiDA code bader@{computer.label} is not configured")
+        else:
+            executable = code.filepath_executable
+            if not executable:
+                failures.append("AiiDA code bader@localhost executable is not set")
+            else:
+                filepath = Path(executable)
+                failure_prefix = "AiiDA code bader@localhost executable is"
+                if not filepath.exists():
+                    failures.append(f"{failure_prefix} missing: {executable}")
+                elif not filepath.is_file():
+                    failures.append(f"{failure_prefix} not a file: {executable}")
+                elif not os.access(filepath, os.X_OK):
+                    failures.append(f"{failure_prefix} not executable: {executable}")
+
+    for group_label in BADER_PSEUDO_GROUPS:
+        if not pseudo_group_exists(group_label):
+            failures.append(f"Pseudopotential group '{group_label}' is missing")
+
+    if failures:
+        raise RuntimeError("; ".join(failures))
